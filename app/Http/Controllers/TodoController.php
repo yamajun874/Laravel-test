@@ -9,15 +9,30 @@ class TodoController extends Controller
 {
     public function index()
     {
-        $item = Table::all();
+        $items = Table::all();
         return view('index', ['items' => $items]);
     }
 
     public function create(Request $request)
     {
         $this->validate($request, Table::$rules);
-        $form = $request->content;
+        $form = $request->all();
         Table::create($form);
+        return redirect('/');
+    }
+
+    public function update(Request $request)
+    {
+        $this->validate($request, Table::$rules);
+        $form = $request->all();
+        unset($form['_token']);
+        Table::where('id', $request->id)->update($form);
+        return redirect('/');
+    }
+
+    public function delete(Request $request)
+    {
+        Table::find($request->id)->delete();
         return redirect('/');
     }
     //
